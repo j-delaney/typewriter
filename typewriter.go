@@ -120,7 +120,7 @@ func Run(lines1, lines2 []string, config Config) string {
 
 	// Find the max width we'll need for line numbers.
 	maxLineNumber := maxInt(len(lines1), len(lines2))
-	maxLineNumberWidth := len(fmt.Sprintf("%d", maxLineNumber)) + 2
+	maxLineNumberWidth := len(strconv.Itoa(maxLineNumber)) + 2
 
 	if config.LeftHeader != "" || config.RightHeader != "" {
 		h1 := rightZero(config.LeftHeader, leftColumnWidth, " ")
