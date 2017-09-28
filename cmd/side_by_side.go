@@ -35,13 +35,13 @@ func main() {
 
 	bytes1, err := ioutil.ReadFile(filePath1)
 	if err != nil {
-		fmt.Fprint(os.Stderr, "Could not read %v: %v", filePath1, err)
+		fmt.Fprintf(os.Stderr, "Could not read %v: %v", filePath1, err)
 		os.Exit(1)
 	}
 
 	bytes2, err := ioutil.ReadFile(filePath2)
 	if err != nil {
-		fmt.Fprint(os.Stderr, "Could not read %v: %v", filePath2, err)
+		fmt.Fprintf(os.Stderr, "Could not read %v: %v", filePath2, err)
 		os.Exit(1)
 	}
 
