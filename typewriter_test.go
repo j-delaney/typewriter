@@ -509,7 +509,14 @@ var benchmarks = []testCase{
 		},
 	},
 	{
-		name: "padding",
+		name: "small padding",
+
+		config: Config{
+			Padding: 5,
+		},
+	},
+	{
+		name: "large padding",
 
 		config: Config{
 			Padding: 50,
@@ -528,6 +535,21 @@ var benchmarks = []testCase{
 		config: Config{
 			LeftHeader:  "Left Header",
 			RightHeader: "RightHeader",
+		},
+	},
+	{
+		name: "all",
+
+		config: Config{
+			ShowLineNumbers: true,
+
+			MarkFirstDifference: true,
+
+			Padding:   5,
+			Separator: "|",
+
+			LeftHeader:  "Left Header",
+			RightHeader: "Right Header",
 		},
 	},
 }
