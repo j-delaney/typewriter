@@ -357,6 +357,23 @@ func TestRun(t *testing.T) {
 var (
 	simpleLine1 = []string{"abc", "defg", "hijk", "l", "mnopq", "rstuv", "wx", "y", "z"}
 	simpleLine2 = []string{"abcde", "f", "g", "hijkl", "mn", "opqrstuv", "wx", "yz"}
+
+	smallCodeSnippet1 = []string{
+		"func getOrEmpty(strings []string, index int) string {",
+		"	if index >= len(strings) {",
+		"		return \"\"",
+		"	}",
+		"	return strings[index]",
+		"}",
+	}
+	smallCodeSnippet2 = []string{
+		"func getOrEmpty(strings []string, index int) string {",
+		"	if len(strings) <= index {",
+		"		return \"\"",
+		"	}",
+		"	return strings[index]",
+		"}",
+	}
 )
 
 var benchmarks = []testCase{
@@ -403,12 +420,26 @@ var benchmarks = []testCase{
 	},
 }
 
-func BenchmarkRunSimple(b *testing.B) {
+func BenchmarkRun(b *testing.B) {
 	for _, tc := range benchmarks {
 		tc := tc
+
 		tc.lines1 = simpleLine1
 		tc.lines2 = simpleLine2
-		b.Run(tc.name, func(b *testing.B) {
+
+		b.Run("Simple/" + tc.name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				Run(tc.lines1, tc.lines2, tc.config)
+			}
+		})
+	}
+
+	for _, tc := range benchmarks {
+		tc := tc
+
+		tc.lines1 = smallCodeSnippet1
+		tc.lines2 = smallCodeSnippet2
+		b.Run("SmallCodeSnippet/" + tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				Run(tc.lines1, tc.lines2, tc.config)
 			}

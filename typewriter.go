@@ -63,7 +63,8 @@ func rightZero(s string, desiredLength int, padChar string) string {
 		panic(fmt.Sprintf("Length of string (%d) is greater than desired length (%d)", len(s), desiredLength))
 	}
 
-	// TODO: Optimize
+	// Not using a byte buffer because it only speeds things up for cases where
+	// there is a lot of padding
 	padding := desiredLength - len(s)
 	for i := 0; i < padding; i++ {
 		s = s + padChar
