@@ -68,6 +68,20 @@ func rightZero(s string, desiredLength int, padChar string) string {
 	return s
 }
 
+func leftZero(s string, desiredLength int, padChar string) string {
+	if len(s) > desiredLength {
+		panic(fmt.Sprintf("Length of string (%d) is greater than desired length (%d)", len(s), desiredLength))
+	}
+
+	// TODO: Optimize
+	padding := desiredLength - len(s)
+	for i := 0; i < padding; i++ {
+		s = padChar + s
+	}
+
+	return s
+}
+
 func findDifference(s1, s2 string) (index int, found bool) {
 	minLen := minInt(len(s1), len(s2))
 	for i := 0; i < minLen; i++ {
@@ -99,6 +113,10 @@ func Run(lines1, lines2 []string, config Config) string {
 		config.Marking = colorDefault
 	}
 
+	// Find the max width we'll need for line numbers.
+	maxLineNumber := maxInt(len(lines1), len(lines2))
+	maxLineNumberWidth := len(fmt.Sprintf("%d", maxLineNumber)) + 2
+
 	differenceFound := false
 	for i := 0; i < maxInt(len(lines1), len(lines2)); i++ {
 		s1 := getOrEmpty(lines1, i)
@@ -117,7 +135,13 @@ func Run(lines1, lines2 []string, config Config) string {
 
 		s1 = rightZero(s1, leftColumnWidth+extraWidth, " ")
 
-		buf.WriteString(s1 + padding + config.Separator + s2 + "\n")
+		lineNumber := ""
+		if config.ShowLineNumbers {
+			lineNumber = fmt.Sprint(i + 1) + ". "
+			lineNumber = leftZero(lineNumber, maxLineNumberWidth, " ")
+		}
+
+		buf.WriteString(lineNumber + s1 + padding + config.Separator + s2 + "\n")
 	}
 
 	return buf.String()

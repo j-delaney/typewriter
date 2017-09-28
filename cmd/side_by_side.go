@@ -15,6 +15,7 @@ func main() {
 	padding := flag.Int("padding", 5, "The padding between the two columns")
 	separator := flag.String("separator", "", "Character to separate the two columns")
 	markDifference := flag.Bool("diff", false, "Mark the first difference found")
+	lineNumbers := flag.Bool("linenums", false, "Show line numbers")
 
 	flag.Parse()
 
@@ -45,6 +46,7 @@ func main() {
 		Separator: *separator,
 
 		MarkFirstDifference: *markDifference,
+		ShowLineNumbers:     *lineNumbers,
 	})
 
 	fmt.Print(s)
