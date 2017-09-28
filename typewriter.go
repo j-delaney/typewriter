@@ -3,6 +3,7 @@ package typewriter
 import (
 	"bytes"
 	"fmt"
+	"strconv"
 )
 
 const (
@@ -149,7 +150,7 @@ func Run(lines1, lines2 []string, config Config) string {
 
 		lineNumber := ""
 		if config.ShowLineNumbers {
-			lineNumber = fmt.Sprint(i+1) + ". "
+			lineNumber = strconv.Itoa(i + 1) + ". "
 			lineNumber = leftZero(lineNumber, maxLineNumberWidth, " ")
 		}
 
