@@ -374,6 +374,118 @@ var (
 		"	return strings[index]",
 		"}",
 	}
+
+	longCodeSnippet1 = []string{
+		"func Run(lines1, lines2 []string, config Config) string {",
+		"	var buf bytes.Buffer",
+		"",
+		"	leftColumnWidth := maxWidth(append(lines1, config.LeftHeader))",
+		"",
+		"	padding := rightZero(\"\", config.Padding, \" \")",
+		"",
+		"	if config.Marking == \"\" {",
+		"		config.Marking = colorDefault",
+		"	}",
+		"",
+		"	// Find the max width we'll need for line numbers.",
+		"	maxLineNumber := maxInt(len(lines1), len(lines2))",
+		"	maxLineNumberWidth := len(fmt.Sprintf(\"%d\", maxLineNumber)) + 2",
+		"",
+		"	if config.LeftHeader != \"\" || config.RightHeader != \"\" {",
+		"		h1 := rightZero(config.LeftHeader, leftColumnWidth, \" \")",
+		"		lineNumber := \"\"",
+		"		if config.ShowLineNumbers {",
+		"			lineNumber = leftZero(lineNumber, maxLineNumberWidth, \" \")",
+		"		}",
+		"		buf.WriteString(lineNumber + h1 + padding + config.Separator + config.RightHeader + \"\n\n\")",
+		"	}",
+		"",
+		"	differenceFound := false",
+		"	for i := 0; i < maxInt(len(lines1), len(lines2)); i++ {",
+		"		s1 := getOrEmpty(lines1, i)",
+		"		s2 := getOrEmpty(lines2, i)",
+		"",
+		"		extraWidth := 0",
+		"		if config.MarkFirstDifference && !differenceFound {",
+		"			diffIndex, found := findDifference(s1, s2)",
+		"			if found {",
+		"				differenceFound = true",
+		"				s1 = s1[:diffIndex] + config.Marking + s1[diffIndex:] + colorOff",
+		"				s2 = s2[:diffIndex] + config.Marking + s2[diffIndex:] + colorOff",
+		"				extraWidth = len(config.Marking) + len(colorOff)",
+		"			}",
+		"		}",
+		"",
+		"		s1 = rightZero(s1, leftColumnWidth+extraWidth, \" \")",
+		"",
+		"		if config.ShowLineNumbers {",
+		"			lineNumber := strconv.Itoa(i + 1) + \". \"",
+		"			lineNumber = leftZero(lineNumber, maxLineNumberWidth, \" \")",
+		"			buf.WriteString(lineNumber)",
+		"		}",
+		"",
+		"		buf.WriteString(s1 + padding + config.Separator + s2 + \"\n\")",
+		"	}",
+		"",
+		"	return buf.String()",
+		"}",
+	}
+
+	longCodeSnippet2 = []string{
+		"func Run(lines1, lines2 []string, config Config) string {",
+		"	var buf bytes.Buffer",
+		"",
+		"	leftColumnWidth := maxWidth(append(lines1, config.LeftHeader))",
+		"",
+		"	padding := rightZero(\"\", config.Padding, \" \")",
+		"",
+		"	if config.Marking == \"\" {",
+		"		config.Marking = colorDefault",
+		"	}",
+		"",
+		"	// Find the max width we'll need for line numbers.",
+		"	maxLineNumber := maxInt(len(lines1), len(lines2))",
+		"	maxLineNumberWidth := len(fmt.Sprintf(\"%d\", maxLineNumber)) + 2",
+		"",
+		"	if config.LeftHeader != \"\" || config.RightHeader != \"\" {",
+		"		h1 := rightZero(config.LeftHeader, leftColumnWidth, \" \")",
+		"		lineNumber := \"\"",
+		"		if config.ShowLineNumbers {",
+		"			lineNumber = leftZero(lineNumber, maxLineNumberWidth, \" \")",
+		"		}",
+		"		buf.WriteString(lineNumber + h1 + padding + config.Separator + config.RightHeader + \"\n\n\")",
+		"	}",
+		"",
+		"	differenceFound := false",
+		"	for i := 0; i < maxInt(len(lines1), len(lines2)); i++ {",
+		"		s1 := getOrEmpty(lines1, i)",
+		"		s2 := getOrEmpty(lines2, i)",
+		"",
+		"		extraWidth := 0",
+		"		if config.MarkFirstDifference && !differenceFound {",
+		"			diffIndex, found := findDifference(s1, s2)",
+		"			if found {",
+		"				differenceFound = true",
+		"				s1 = s1[:diffIndex] + config.Marking + s1[diffIndex:] + colorOff",
+		"				s2 = s2[:diffIndex] + config.Marking + s2[diffIndex:] + colorOff",
+		"				extraWidth = len(config.Marking) + len(colorOff)",
+		"			}",
+		"		}",
+		"",
+		"		s1 = rightZero(s1, leftColumnWidth+extraWidth, \" \")",
+		"",
+		"		if config.ShowLineNumbers {",
+		"			lineNumber := strconv.Itoa(i + 1) + \". \"",
+		"			lineNumber = leftZero(lineNumber, maxLineNumberWidth, \" \")",
+		"			buf.WriteString(lineNumber)",
+		"		}",
+		"",
+		"		buf.WriteString(s1 + padding + config.Separator + s2)",
+		"	}",
+		"",
+		"	return buf.String()",
+		"}",
+	}
 )
 
 var benchmarks = []testCase{
@@ -440,6 +552,18 @@ func BenchmarkRun(b *testing.B) {
 		tc.lines1 = smallCodeSnippet1
 		tc.lines2 = smallCodeSnippet2
 		b.Run("SmallCodeSnippet/" + tc.name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				Run(tc.lines1, tc.lines2, tc.config)
+			}
+		})
+	}
+
+	for _, tc := range benchmarks {
+		tc := tc
+
+		tc.lines1 = longCodeSnippet1
+		tc.lines2 = longCodeSnippet2
+		b.Run("LongCodeSnippet/" + tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				Run(tc.lines1, tc.lines2, tc.config)
 			}
