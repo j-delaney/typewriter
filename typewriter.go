@@ -22,6 +22,9 @@ type Config struct {
 
 	Padding   int
 	Separator string
+
+	LeftHeader  string
+	RightHeader string
 }
 
 func maxInt(a, b int) int {
@@ -105,7 +108,7 @@ func findDifference(s1, s2 string) (index int, found bool) {
 func Run(lines1, lines2 []string, config Config) string {
 	var buf bytes.Buffer
 
-	leftColumnWidth := maxWidth(lines1)
+	leftColumnWidth := maxWidth(append(lines1, config.LeftHeader))
 
 	padding := rightZero("", config.Padding, " ")
 
@@ -116,6 +119,15 @@ func Run(lines1, lines2 []string, config Config) string {
 	// Find the max width we'll need for line numbers.
 	maxLineNumber := maxInt(len(lines1), len(lines2))
 	maxLineNumberWidth := len(fmt.Sprintf("%d", maxLineNumber)) + 2
+
+	if config.LeftHeader != "" || config.RightHeader != "" {
+		h1 := rightZero(config.LeftHeader, leftColumnWidth, " ")
+		lineNumber := ""
+		if config.ShowLineNumbers {
+			lineNumber = leftZero(lineNumber, maxLineNumberWidth, " ")
+		}
+		buf.WriteString(lineNumber + h1 + padding + config.Separator + config.RightHeader + "\n\n")
+	}
 
 	differenceFound := false
 	for i := 0; i < maxInt(len(lines1), len(lines2)); i++ {
@@ -137,7 +149,7 @@ func Run(lines1, lines2 []string, config Config) string {
 
 		lineNumber := ""
 		if config.ShowLineNumbers {
-			lineNumber = fmt.Sprint(i + 1) + ". "
+			lineNumber = fmt.Sprint(i+1) + ". "
 			lineNumber = leftZero(lineNumber, maxLineNumberWidth, " ")
 		}
 

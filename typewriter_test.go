@@ -30,6 +30,9 @@ func doTest(t *testing.T, tc testCase) {
 				MarkFirstDifference: true,
 				Separator:           "‖",
 				Padding:             3,
+
+				LeftHeader:  "expected",
+				RightHeader: "actual",
 			}))
 		}
 	}
@@ -266,6 +269,76 @@ var testCases = []testCase{
 		abc|abc
 		def%s%s|def%sg%s
 		hij|hij`, colorDefault, colorOff, colorDefault, colorOff),
+	},
+	{
+		name: "simple headers",
+
+		lines1: []string{"abc", "def", "hij"},
+		lines2: []string{"abc", "def", "hij"},
+		config: Config{
+			Separator:   "|",
+			LeftHeader:  "l",
+			RightHeader: "r",
+		},
+
+		expected: `
+		l  |r
+
+		abc|abc
+		def|def
+		hij|hij`,
+	},
+	{
+		name: "long headers",
+
+		lines1: []string{"abc", "def", "hij"},
+		lines2: []string{"abc", "def", "hij"},
+		config: Config{
+			Separator:   "|",
+			LeftHeader:  "left header",
+			RightHeader: "right header",
+		},
+
+		expected: `
+		left header|right header
+
+		abc        |abc
+		def        |def
+		hij        |hij`,
+	},
+	{
+		name: "left header only",
+
+		lines1: []string{"abc", "def", "hij"},
+		lines2: []string{"abc", "def", "hij"},
+		config: Config{
+			Separator:  "|",
+			LeftHeader: "left header",
+		},
+
+		expected: `
+		left header|
+
+		abc        |abc
+		def        |def
+		hij        |hij`,
+	},
+	{
+		name: "right header only",
+
+		lines1: []string{"abc", "def", "hij"},
+		lines2: []string{"abc", "def", "hij"},
+		config: Config{
+			Separator:   "|",
+			RightHeader: "right header",
+		},
+
+		expected: `
+		   |right header
+
+		abc|abc
+		def|def
+		hij|hij`,
 	},
 }
 

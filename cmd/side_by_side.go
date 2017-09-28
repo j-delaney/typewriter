@@ -16,6 +16,7 @@ func main() {
 	separator := flag.String("separator", "", "Character to separate the two columns")
 	markDifference := flag.Bool("diff", false, "Mark the first difference found")
 	lineNumbers := flag.Bool("linenums", false, "Show line numbers")
+	showHeader := flag.Bool("header", false, "Use the filenames as headers")
 
 	flag.Parse()
 
@@ -41,13 +42,21 @@ func main() {
 
 	lines1 := strings.Split(string(bytes1), "\n")
 	lines2 := strings.Split(string(bytes2), "\n")
-	s := typewriter.Run(lines1, lines2, typewriter.Config{
+
+	config := typewriter.Config{
 		Padding:   *padding,
 		Separator: *separator,
 
 		MarkFirstDifference: *markDifference,
 		ShowLineNumbers:     *lineNumbers,
-	})
+	}
+
+	if *showHeader {
+		config.LeftHeader = filePath1
+		config.RightHeader = filePath2
+	}
+
+	s := typewriter.Run(lines1, lines2, config)
 
 	fmt.Print(s)
 }
