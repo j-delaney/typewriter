@@ -12,6 +12,11 @@ import (
 )
 
 func main() {
+	flag.Usage = func() {
+		fmt.Printf("Usage: side_by_side [options] leftFile rightFile\nOptions:\n")
+		flag.PrintDefaults()
+	}
+
 	padding := flag.Int("padding", 5, "The padding between the two columns")
 	separator := flag.String("separator", "", "Character to separate the two columns")
 	markDifference := flag.Bool("diff", false, "Mark the first difference found")
@@ -22,7 +27,7 @@ func main() {
 
 	if flag.NArg() != 2 {
 		flag.Usage()
-		os.Exit(0)
+		os.Exit(2)
 	}
 
 	filePath1 := flag.Arg(0)
