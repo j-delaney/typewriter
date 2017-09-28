@@ -148,13 +148,13 @@ func Run(lines1, lines2 []string, config Config) string {
 
 		s1 = rightZero(s1, leftColumnWidth+extraWidth, " ")
 
-		lineNumber := ""
 		if config.ShowLineNumbers {
-			lineNumber = strconv.Itoa(i + 1) + ". "
+			lineNumber := strconv.Itoa(i + 1) + ". "
 			lineNumber = leftZero(lineNumber, maxLineNumberWidth, " ")
+			buf.WriteString(lineNumber)
 		}
 
-		buf.WriteString(lineNumber + s1 + padding + config.Separator + s2 + "\n")
+		buf.WriteString(s1 + padding + config.Separator + s2 + "\n")
 	}
 
 	return buf.String()
