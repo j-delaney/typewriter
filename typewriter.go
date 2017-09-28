@@ -110,7 +110,10 @@ func findDifference(s1, s2 string) (index int, found bool) {
 func Run(lines1, lines2 []string, config Config) string {
 	var buf bytes.Buffer
 
-	leftColumnWidth := maxWidth(append(lines1, config.LeftHeader))
+	leftColumnWidth := maxWidth(lines1)
+	if len(config.LeftHeader) > leftColumnWidth {
+		leftColumnWidth = len(config.LeftHeader)
+	}
 
 	padding := rightZero("", config.Padding, " ")
 
