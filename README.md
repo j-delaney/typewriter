@@ -30,7 +30,8 @@ Example of a function for printing two slices of strings side-by-side:
 
 ```go
 func PrintSideBySide(s1, s2 []string) {
-	output := typewriter.Run(s1, s2, Config{
+	var output string
+	output = typewriter.Run(s1, s2, Config{
 		ShowLineNumbers:     true,
 		Separator:           "|",
 		MarkFirstDifference: true,
