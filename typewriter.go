@@ -58,9 +58,9 @@ func getOrEmpty(strings []string, index int) string {
 	return strings[index]
 }
 
-func rightZero(s string, desiredLength int, padChar string) string {
+func rightZero(s string, desiredLength int, padChar string) (string, error) {
 	if len(s) > desiredLength {
-		panic(fmt.Sprintf("Length of string (%d) is greater than desired length (%d)", len(s), desiredLength))
+		return "", fmt.Errorf("Length of string (%d) is greater than desired length (%d)", len(s), desiredLength)
 	}
 
 	// Not using a byte buffer because it only speeds things up for cases where
@@ -70,12 +70,12 @@ func rightZero(s string, desiredLength int, padChar string) string {
 		s = s + padChar
 	}
 
-	return s
+	return s, nil
 }
 
-func leftZero(s string, desiredLength int, padChar string) string {
+func leftZero(s string, desiredLength int, padChar string) (string, error) {
 	if len(s) > desiredLength {
-		panic(fmt.Sprintf("Length of string (%d) is greater than desired length (%d)", len(s), desiredLength))
+		return "", fmt.Errorf("Length of string (%d) is greater than desired length (%d)", len(s), desiredLength)
 	}
 
 	// TODO: Optimize
@@ -84,7 +84,7 @@ func leftZero(s string, desiredLength int, padChar string) string {
 		s = padChar + s
 	}
 
-	return s
+	return s, nil
 }
 
 func findDifference(s1, s2 string) (index int, found bool) {
@@ -107,7 +107,7 @@ func findDifference(s1, s2 string) (index int, found bool) {
 	return -1, false
 }
 
-func Run(lines1, lines2 []string, config Config) string {
+func Run(lines1, lines2 []string, config Config) (string, error) {
 	var buf bytes.Buffer
 
 	leftColumnWidth := maxWidth(lines1)
@@ -115,7 +115,10 @@ func Run(lines1, lines2 []string, config Config) string {
 		leftColumnWidth = len(config.LeftHeader)
 	}
 
-	padding := rightZero("", config.Padding, " ")
+	padding, err := rightZero("", config.Padding, " ")
+	if err != nil {
+		return "", err
+	}
 
 	if config.Marking == "" {
 		config.Marking = colorDefault
@@ -126,10 +129,17 @@ func Run(lines1, lines2 []string, config Config) string {
 	maxLineNumberWidth := len(strconv.Itoa(maxLineNumber)) + 2
 
 	if config.LeftHeader != "" || config.RightHeader != "" {
-		h1 := rightZero(config.LeftHeader, leftColumnWidth, " ")
+		h1, err := rightZero(config.LeftHeader, leftColumnWidth, " ")
+		if err != nil {
+			return "", err
+		}
+
 		lineNumber := ""
 		if config.ShowLineNumbers {
-			lineNumber = leftZero(lineNumber, maxLineNumberWidth, " ")
+			lineNumber, err = leftZero(lineNumber, maxLineNumberWidth, " ")
+			if err != nil {
+				return "", err
+			}
 		}
 		buf.WriteString(lineNumber + h1 + padding + config.Separator + config.RightHeader + "\n\n")
 	}
@@ -150,16 +160,24 @@ func Run(lines1, lines2 []string, config Config) string {
 			}
 		}
 
-		s1 = rightZero(s1, leftColumnWidth+extraWidth, " ")
+		s1, err = rightZero(s1, leftColumnWidth+extraWidth, " ")
+		if err != nil {
+			return "", err
+		}
 
 		if config.ShowLineNumbers {
 			lineNumber := strconv.Itoa(i + 1) + ". "
-			lineNumber = leftZero(lineNumber, maxLineNumberWidth, " ")
+
+			lineNumber, err = leftZero(lineNumber, maxLineNumberWidth, " ")
+			if err != nil {
+				return "", err
+			}
+
 			buf.WriteString(lineNumber)
 		}
 
 		buf.WriteString(s1 + padding + config.Separator + s2 + "\n")
 	}
 
-	return buf.String()
+	return buf.String(), nil
 }

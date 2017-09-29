@@ -23,14 +23,19 @@ Example of a function for printing two slices of strings side-by-side:
 
 ```go
 func PrintSideBySide(s1, s2 []string) {
-	var output string
-	output = typewriter.Run(s1, s2, Config{
-		ShowLineNumbers:     true,
-		Separator:           "|",
-		MarkFirstDifference: true,
-	})
+  var output string
+  var err error
 
-	fmt.Print(output)
+  output, err = typewriter.Run(s1, s2, Config{
+    ShowLineNumbers:     true,
+    Separator:           "|",
+    MarkFirstDifference: true,
+  })
+
+  if err != nil {
+    panic(err)    	  
+  }
+  fmt.Print(output)
 }
 ```
 

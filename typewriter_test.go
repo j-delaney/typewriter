@@ -20,20 +20,26 @@ func doTest(t *testing.T, tc testCase) {
 
 	expected := buf.String()
 
-	actual := Run(tc.lines1, tc.lines2, tc.config)
+	actual, err := Run(tc.lines1, tc.lines2, tc.config)
+	assert.NoError(t, err)
 
 	if expected != actual {
 		if tc.config.MarkFirstDifference {
 			t.Log("Not using typewriter to show difference because color characters mess up output")
 		} else {
-			t.Log("\n" + Run(strings.Split(expected, "\n"), strings.Split(actual, "\n"), Config{
+			s, err := Run(strings.Split(expected, "\n"), strings.Split(actual, "\n"), Config{
 				MarkFirstDifference: true,
 				Separator:           "‖",
 				Padding:             3,
 
 				LeftHeader:  "expected",
 				RightHeader: "actual",
-			}))
+			})
+			if err == nil {
+				t.Log("\n" + s)
+			} else {
+				t.Logf("Could not generate typewriter output. Got error %v", err)
+			}
 		}
 	}
 	assert.Equal(t, expected, actual)
@@ -561,7 +567,7 @@ func BenchmarkRun(b *testing.B) {
 		tc.lines1 = simpleLine1
 		tc.lines2 = simpleLine2
 
-		b.Run("Simple/" + tc.name, func(b *testing.B) {
+		b.Run("Simple/"+tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				Run(tc.lines1, tc.lines2, tc.config)
 			}
@@ -573,7 +579,7 @@ func BenchmarkRun(b *testing.B) {
 
 		tc.lines1 = smallCodeSnippet1
 		tc.lines2 = smallCodeSnippet2
-		b.Run("SmallCodeSnippet/" + tc.name, func(b *testing.B) {
+		b.Run("SmallCodeSnippet/"+tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				Run(tc.lines1, tc.lines2, tc.config)
 			}
@@ -585,7 +591,7 @@ func BenchmarkRun(b *testing.B) {
 
 		tc.lines1 = longCodeSnippet1
 		tc.lines2 = longCodeSnippet2
-		b.Run("LongCodeSnippet/" + tc.name, func(b *testing.B) {
+		b.Run("LongCodeSnippet/"+tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				Run(tc.lines1, tc.lines2, tc.config)
 			}
