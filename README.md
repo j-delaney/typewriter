@@ -11,16 +11,7 @@ Go from this:
 To this:
 ![](/readme_imgs/after.png?raw=true "After")
 
-## Installing The CLI
-
-If you just want the `side_by_side` command-line tool you should run this command:
-```
-go get -u github.com/j-delaney/typewriter/cmd/side_by_side
-```
-
-This will put the `side_by_side` tool in your `~/go/bin` directory.
-
-## Usage & Example
+## Library Usage & Example
 
 First you'll want to get the library with
 
@@ -51,3 +42,19 @@ This would print something in the form of:
 3. hi  |ghi
 4. j   |j
 ```
+
+## Command-Line Installation and Usage
+
+If you just want the `side_by_side` command-line tool you should run this command:
+
+```
+go get -u github.com/j-delaney/typewriter/cmd/side_by_side
+```
+
+This will put the `side_by_side` tool in your `~/go/bin` directory.
+
+If `~/go/bin` is in your `PATH` then you can just run `side_by_side` from your shell. Otherwise you'll need to run `~/go/bin/side_by_side`.
+
+It expects two file paths as arguments. For example, if you want to see foo.txt and bar.txt side-by-side run `side_by_side path/to/foo.txt path/to/bar.txt`.
+
+Run `side_by_side -h` to see all options.
