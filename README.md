@@ -1,5 +1,7 @@
 # Typewriter
 
+[![Build Status](https://travis-ci.org/j-delaney/typewriter.svg?branch=travis)](https://travis-ci.org/j-delaney/typewriter)
+
 A library and command-line tool for displaying 2 columns of text.
 The original purpose of this library is to improve failed test output when comparing two multiline strings.
 Go from this:
