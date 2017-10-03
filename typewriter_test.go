@@ -20,14 +20,14 @@ func doTest(t *testing.T, tc testCase) {
 
 	expected := buf.String()
 
-	actual, err := Run(tc.lines1, tc.lines2, tc.config)
+	actual, err := Sprint(tc.lines1, tc.lines2, tc.config)
 	assert.NoError(t, err)
 
 	if expected != actual {
 		if tc.config.MarkFirstDifference {
 			t.Log("Not using typewriter to show difference because color characters mess up output")
 		} else {
-			s, err := Run(strings.Split(expected, "\n"), strings.Split(actual, "\n"), Config{
+			s, err := Sprint(strings.Split(expected, "\n"), strings.Split(actual, "\n"), Config{
 				MarkFirstDifference: true,
 				Separator:           "‖",
 				Padding:             3,
@@ -382,7 +382,7 @@ var (
 	}
 
 	longCodeSnippet1 = []string{
-		"func Run(lines1, lines2 []string, config Config) string {",
+		"func Sprint(lines1, lines2 []string, config Config) string {",
 		"	var buf bytes.Buffer",
 		"",
 		"	leftColumnWidth := maxWidth(append(lines1, config.LeftHeader))",
@@ -438,7 +438,7 @@ var (
 	}
 
 	longCodeSnippet2 = []string{
-		"func Run(lines1, lines2 []string, config Config) string {",
+		"func Sprint(lines1, lines2 []string, config Config) string {",
 		"	var buf bytes.Buffer",
 		"",
 		"	leftColumnWidth := maxWidth(append(lines1, config.LeftHeader))",
@@ -569,7 +569,7 @@ func BenchmarkRun(b *testing.B) {
 
 		b.Run("Simple/"+tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				Run(tc.lines1, tc.lines2, tc.config)
+				Sprint(tc.lines1, tc.lines2, tc.config)
 			}
 		})
 	}
@@ -581,7 +581,7 @@ func BenchmarkRun(b *testing.B) {
 		tc.lines2 = smallCodeSnippet2
 		b.Run("SmallCodeSnippet/"+tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				Run(tc.lines1, tc.lines2, tc.config)
+				Sprint(tc.lines1, tc.lines2, tc.config)
 			}
 		})
 	}
@@ -593,7 +593,7 @@ func BenchmarkRun(b *testing.B) {
 		tc.lines2 = longCodeSnippet2
 		b.Run("LongCodeSnippet/"+tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				Run(tc.lines1, tc.lines2, tc.config)
+				Sprint(tc.lines1, tc.lines2, tc.config)
 			}
 		})
 	}
