@@ -61,7 +61,7 @@ func main() {
 		config.RightHeader = filePath2
 	}
 
-	s, err := typewriter.Run(lines1, lines2, config)
+	s, err := typewriter.Sprint(lines1, lines2, config)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, `Encountered an unknown error: %v
 		Please report this to https://github.com/j-delaney/typewriter/issues/new`, err)

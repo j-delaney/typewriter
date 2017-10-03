@@ -107,7 +107,7 @@ func findDifference(s1, s2 string) (index int, found bool) {
 	return -1, false
 }
 
-func Run(lines1, lines2 []string, config Config) (string, error) {
+func Sprint(lines1, lines2 []string, config Config) (string, error) {
 	var buf bytes.Buffer
 
 	leftColumnWidth := maxWidth(lines1)
