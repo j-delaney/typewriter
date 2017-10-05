@@ -26,7 +26,7 @@ func PrintSideBySide(s1, s2 []string) {
   var output string
   var err error
 
-  output, err = typewriter.Run(s1, s2, Config{
+  output, err = typewriter.Sprint(s1, s2, Config{
     ShowLineNumbers:     true,
     Separator:           "|",
     MarkFirstDifference: true,
