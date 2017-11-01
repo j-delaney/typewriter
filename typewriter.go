@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -60,31 +61,20 @@ func getOrEmpty(strings []string, index int) string {
 
 func rightZero(s string, desiredLength int, padChar string) (string, error) {
 	if len(s) > desiredLength {
-		return "", fmt.Errorf("Length of string (%d) is greater than desired length (%d)", len(s), desiredLength)
+		return "", fmt.Errorf("length of string (%d) is greater than desired length (%d)", len(s), desiredLength)
 	}
 
-	// Not using a byte buffer because it only speeds things up for cases where
-	// there is a lot of padding
 	padding := desiredLength - len(s)
-	for i := 0; i < padding; i++ {
-		s = s + padChar
-	}
-
-	return s, nil
+	return s + strings.Repeat(padChar, padding), nil
 }
 
 func leftZero(s string, desiredLength int, padChar string) (string, error) {
 	if len(s) > desiredLength {
-		return "", fmt.Errorf("Length of string (%d) is greater than desired length (%d)", len(s), desiredLength)
+		return "", fmt.Errorf("length of string (%d) is greater than desired length (%d)", len(s), desiredLength)
 	}
 
-	// TODO: Optimize
 	padding := desiredLength - len(s)
-	for i := 0; i < padding; i++ {
-		s = padChar + s
-	}
-
-	return s, nil
+	return strings.Repeat(padChar, padding) + s, nil
 }
 
 func findDifference(s1, s2 string) (index int, found bool) {
@@ -166,7 +156,7 @@ func Sprint(lines1, lines2 []string, config Config) (string, error) {
 		}
 
 		if config.ShowLineNumbers {
-			lineNumber := strconv.Itoa(i + 1) + ". "
+			lineNumber := strconv.Itoa(i+1) + ". "
 
 			lineNumber, err = leftZero(lineNumber, maxLineNumberWidth, " ")
 			if err != nil {
