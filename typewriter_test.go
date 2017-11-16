@@ -346,6 +346,34 @@ var testCases = []testCase{
 		def|def
 		hij|hij`,
 	},
+	{
+		name: "unicode simple",
+
+		lines1: []string{"ಠ_ಠ", "a"},
+		lines2: []string{"(╯°□°)╯︵ ┻━┻", "b"},
+		config: Config{},
+
+		expected: `
+		ಠ_ಠ(╯°□°)╯︵ ┻━┻
+		a  b`,
+	},
+	{
+		name: "unicode header",
+
+		lines1: []string{"a", "b", "c"},
+		lines2: []string{"d", "e", "f"},
+		config: Config{
+			LeftHeader: "(╯°□°)╯︵ ┻━┻",
+			RightHeader: "ಠ_ಠ",
+		},
+
+		expected: `
+		(╯°□°)╯︵ ┻━┻ಠ_ಠ
+
+		a           d
+		b           e
+		c           f`,
+	},
 }
 
 func TestRun(t *testing.T) {

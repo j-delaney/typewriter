@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"strconv"
-	"strings"
+	"unicode/utf8"
 )
 
 const (
@@ -47,7 +47,7 @@ func minInt(a, b int) int {
 func maxWidth(lines []string) int {
 	max := 0
 	for _, line := range lines {
-		max = maxInt(len(line), max)
+		max = maxInt(utf8.RuneCountInString(line), max)
 	}
 	return max
 }
@@ -60,25 +60,38 @@ func getOrEmpty(strings []string, index int) string {
 }
 
 func rightZero(s string, desiredLength int, padChar string) (string, error) {
-	if len(s) > desiredLength {
-		return "", fmt.Errorf("length of string (%d) is greater than desired length (%d)", len(s), desiredLength)
+	sLength := utf8.RuneCountInString(s)
+	if sLength > desiredLength {
+		return "", fmt.Errorf("Length of string (%d) is greater than desired length (%d)", sLength, desiredLength)
 	}
 
-	padding := desiredLength - len(s)
-	return s + strings.Repeat(padChar, padding), nil
+	// Not using a byte buffer because it only speeds things up for cases where
+	// there is a lot of padding
+	padding := desiredLength - sLength
+	for i := 0; i < padding; i++ {
+		s = s + padChar
+	}
+
+	return s, nil
 }
 
 func leftZero(s string, desiredLength int, padChar string) (string, error) {
-	if len(s) > desiredLength {
-		return "", fmt.Errorf("length of string (%d) is greater than desired length (%d)", len(s), desiredLength)
+	sLength := utf8.RuneCountInString(s)
+	if sLength > desiredLength {
+		return "", fmt.Errorf("Length of string (%d) is greater than desired length (%d)", sLength, desiredLength)
 	}
 
-	padding := desiredLength - len(s)
-	return strings.Repeat(padChar, padding) + s, nil
+	// TODO: Optimize
+	padding := desiredLength - sLength
+	for i := 0; i < padding; i++ {
+		s = padChar + s
+	}
+
+	return s, nil
 }
 
 func findDifference(s1, s2 string) (index int, found bool) {
-	minLen := minInt(len(s1), len(s2))
+	minLen := minInt(utf8.RuneCountInString(s1), utf8.RuneCountInString(s2))
 	for i := 0; i < minLen; i++ {
 		c1 := s1[i]
 		c2 := s2[i]
@@ -88,10 +101,10 @@ func findDifference(s1, s2 string) (index int, found bool) {
 		}
 	}
 
-	if len(s1) > len(s2) {
-		return len(s2), true
-	} else if len(s2) > len(s1) {
-		return len(s1), true
+	if utf8.RuneCountInString(s1) > utf8.RuneCountInString(s2) {
+		return utf8.RuneCountInString(s2), true
+	} else if utf8.RuneCountInString(s2) > utf8.RuneCountInString(s1) {
+		return utf8.RuneCountInString(s1), true
 	}
 
 	return -1, false
@@ -101,8 +114,8 @@ func Sprint(lines1, lines2 []string, config Config) (string, error) {
 	var buf bytes.Buffer
 
 	leftColumnWidth := maxWidth(lines1)
-	if len(config.LeftHeader) > leftColumnWidth {
-		leftColumnWidth = len(config.LeftHeader)
+	if utf8.RuneCountInString(config.LeftHeader) > leftColumnWidth {
+		leftColumnWidth = utf8.RuneCountInString(config.LeftHeader)
 	}
 
 	padding, err := rightZero("", config.Padding, " ")
